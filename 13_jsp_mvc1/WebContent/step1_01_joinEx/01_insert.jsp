@@ -13,7 +13,6 @@
 			이름 : <input type="text" name="name"><br>
 			<input type="submit" value="회원가입">
 			<input type="reset" value="다시입력">
-		
 		</form>
 
 </body>
