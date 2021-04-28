@@ -4,9 +4,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>03_delete.jsp</title>
+<title>03_delete</title>
 </head>
 <body>
+	
 
 </body>
 </html>

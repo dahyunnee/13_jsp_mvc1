@@ -13,6 +13,7 @@
 		String id = (String)session.getAttribute("id");	
 	%>
 	
+	
 	<%
 		if (id == null){	
 	%>
@@ -24,9 +25,9 @@
 		} else{
 	%>
 			<h1>Welcome! <%=id %></h1>
-			<p><a href="03_delete.jsp"></a></p>
-			<p><a href="05_update.jsp"></a></p>
-			<p><a href="09_logout.jsp"></a></p>
+			<p><a href="03_delete.jsp">Delete</a></p>
+			<p><a href="05_update.jsp">Update</a></p>
+			<p><a href="09_logout.jsp">Logout</a></p>
 	<% 		
 		}
 	%>
