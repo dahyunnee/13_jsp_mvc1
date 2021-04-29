@@ -132,4 +132,36 @@ public class MemberDAO {
 		
 	}
 	
+	
+	//Leave DAO
+	public boolean leaveMember(String id, String pwd) {
+		
+		boolean isLeaveMember = false;
+		
+		conn = getConnection();
+		try {
+			pstmt = conn.prepareStatement("select * from member where id=? and passwd = ?");
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				pstmt = conn.prepareStatement("delete from member where id=?");
+				pstmt.setString(1, id);
+				pstmt.executeUpdate();
+				
+				isLeaveMember = true;
+				System.out.println("member테이블의 계정이 삭제되었습니다.");
+				System.out.println(id + "/" + pwd);
+			}
+		} catch (Exception e) {e.printStackTrace();}finally {
+			if(rs != null) try {rs.close();} catch (Exception e) {e.printStackTrace();}
+			if(pstmt != null) try {pstmt.close();} catch (Exception e) {e.printStackTrace();}
+			if(conn != null) try {conn.close();} catch (Exception e) {e.printStackTrace();}
+		}
+		
+		return isLeaveMember;
+		
+	}
+	
 }
