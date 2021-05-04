@@ -20,6 +20,7 @@ public class BoardDAO {
 	private Connection conn         = null;
 	private PreparedStatement pstmt = null;
 	private ResultSet rs            = null;
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	// 반환 타입은 Connection 객체이며 메서드명은 관용적으로
 	// getConnection으로 작명한다.
@@ -66,8 +67,6 @@ public class BoardDAO {
 	// 전체 게시글을 조회하는 DAO
 	public ArrayList<BoardDTO> getAllBoard() {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		
 		ArrayList<BoardDTO> boardList = new ArrayList<BoardDTO>();
 		BoardDTO bdto = null;
 		conn = getConnection();
@@ -100,13 +99,156 @@ public class BoardDAO {
 			if (conn != null) try {conn.close();}  catch (SQLException e) {e.printStackTrace();}
 		}
 		
-		
-		
 		return boardList;
+	}
+	
+	// 하나의 게시글을 조회하는 DAO
+	public BoardDTO getOneBoard(int num) {
+		
+		BoardDTO bdto = new BoardDTO();
+		
+		try {
+			conn = getConnection();
+			
+			pstmt = conn.prepareStatement("UPDATE BOARD SET READ_COUNT = READ_COUNT + 1 WHERE NUM=?");
+			pstmt.setInt(1, num);
+			pstmt.executeUpdate();
+			
+			pstmt = conn.prepareStatement("SELECT * FROM BOARD WHERE NUM=?");
+			pstmt.setInt(1, num);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				
+				bdto.setNum(rs.getInt("num"));
+				bdto.setWriter(rs.getString("writer"));
+				bdto.setEmail(rs.getString("email"));
+				bdto.setSubject(rs.getString("subject"));
+				bdto.setPassword(rs.getString("password"));
+				bdto.setRegDate(sdf.format(rs.getDate("reg_date")));
+				bdto.setReadCount(rs.getInt("read_count"));
+				bdto.setContent(rs.getString("content"));
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs!=null)     try {rs.close();}    catch (SQLException e) {e.printStackTrace();}
+			if (pstmt!=null)  try {pstmt.close();} catch (SQLException e) {e.printStackTrace();}
+			if (conn != null) try {conn.close();}  catch (SQLException e) {e.printStackTrace();}
+		}
+		return bdto;
+	}
+	
+	
+	// 수정할 하나의 게시글을 조회하는 DAO
+	public BoardDTO getOneUpdateBoard(int num) {
+		
+		BoardDTO bdto = new BoardDTO();
+		
+		try {
+			conn = getConnection();
+				
+			pstmt = conn.prepareStatement("SELECT * FROM BOARD WHERE NUM=?");
+			pstmt.setInt(1, num);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				
+				bdto.setNum(rs.getInt("num"));
+				bdto.setWriter(rs.getString("writer"));
+				bdto.setEmail(rs.getString("email"));
+				bdto.setSubject(rs.getString("subject"));
+				bdto.setPassword(rs.getString("password"));
+				bdto.setRegDate(sdf.format(rs.getDate("reg_date")));
+				bdto.setReadCount(rs.getInt("read_count"));
+				bdto.setContent(rs.getString("content"));
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs!=null)     try {rs.close();}    catch (SQLException e) {e.printStackTrace();}
+			if (pstmt!=null)  try {pstmt.close();} catch (SQLException e) {e.printStackTrace();}
+			if (conn != null) try {conn.close();}  catch (SQLException e) {e.printStackTrace();}
+		}
+		return bdto;
+	}
+	
+	
+	// 게시글을 수정하는 DAO
+	public boolean updateBoard(BoardDTO boardDTO) {
+		
+		boolean isUpdate = false;
+		
+		try {
+
+			conn = getConnection();
+			
+			pstmt = conn.prepareStatement("SELECT * FROM BOARD WHERE NUM=? AND PASSWORD=?");
+			pstmt.setInt(1, boardDTO.getNum());
+			pstmt.setString(2, boardDTO.getPassword());
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				
+				pstmt = conn.prepareStatement("UPDATE BOARD SET SUBJECT=? , CONTENT=? WHERE NUM=?");
+				pstmt.setString(1, boardDTO.getSubject());
+				pstmt.setString(2, boardDTO.getContent());
+				pstmt.setInt(3, boardDTO.getNum());
+				pstmt.executeUpdate();
+				isUpdate = true;
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs!=null)     try {rs.close();}    catch (SQLException e) {e.printStackTrace();}
+			if (pstmt!=null)  try {pstmt.close();} catch (SQLException e) {e.printStackTrace();}
+			if (conn != null) try {conn.close();}  catch (SQLException e) {e.printStackTrace();}
+		}
+		
+		return isUpdate;
+		
+	}
+	
+	// 게시글을 삭제하는 DAO
+	public boolean deleteBoard(BoardDTO boardDTO) {
+
+		boolean isDelete = false;
+		
+		try {
+			
+			conn = getConnection();
+			
+			pstmt = conn.prepareStatement("SELECT * FROM BOARD WHERE NUM=? AND PASSWORD=?");
+			pstmt.setInt(1, boardDTO.getNum());
+			pstmt.setString(2, boardDTO.getPassword());
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				pstmt = conn.prepareStatement("DELETE FROM BOARD WHERE NUM=?");
+				pstmt.setInt(1, boardDTO.getNum());
+				pstmt.executeUpdate();
+				isDelete = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs!=null)     try {rs.close();}    catch (SQLException e) {e.printStackTrace();}
+			if (pstmt!=null)  try {pstmt.close();} catch (SQLException e) {e.printStackTrace();}
+			if (conn != null) try {conn.close();}  catch (SQLException e) {e.printStackTrace();}
+		}
+		
+		return isDelete;
+		
 	}
 	
 	
 	
-	
-	
 }
+
+
