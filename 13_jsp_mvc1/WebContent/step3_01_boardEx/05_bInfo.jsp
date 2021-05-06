@@ -45,7 +45,7 @@
 			<td colspan="2">
 				<input type="button" value="수정하기" onclick="location.href='06_bUpdate.jsp?num=<%=bdto.getNum() %>'" >
 				<input type="button" value="삭제하기" onclick="location.href='08_bDelete.jsp?num=<%=bdto.getNum() %>'" >
-				<input type="button" value="목록보기"> 
+				<input type="button" value="목록보기" onclick="location.href='04_blist.jsp'"> 
 			</td>
 		</tr>
 	</table>
